@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoDB = require("./db");// Importing a custom module that connects to MongoDB
 const app = express()
-const port = 5000;
+const port = process.env.port || 5000;
 
 
 
