@@ -7,10 +7,7 @@ const  UserSchema = new Schema({
         type : String ,
         required : true
     },
-    location :{
-        type:String,
-        required : true
-    },
+   
     email :{
         type:String,
         required : true
@@ -25,6 +22,15 @@ const  UserSchema = new Schema({
     }
 
 });
-//Humare database me store ho jaaega ye model jisme user ye hoga or ye given UserSchema
 
 module.exports = mongoose.model('user' , UserSchema)
+
+
+
+
+
+
+
+
+
+
