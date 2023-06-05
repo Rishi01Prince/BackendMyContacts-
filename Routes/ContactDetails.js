@@ -63,21 +63,24 @@ router.post('/mycurrentData', async (req, res) => {
 
 router.post('/deleteData', async (req, res) => {
   try {
-    const{useremail , email , name , phone} = req.body;
+    const { useremail, email, name, phone } = req.body;
 
     // Find the user's document
-    const loggedinuser = await Contact.findOne({ useremail });
+    const loggedinuser = await Contact.findOne({ email: useremail });
 
     if (!loggedinuser) {
+      console.log('User not found.');
       return res.json({ success: false, error: 'User not found.' });
     }
 
+    console.log('Before deletion:', loggedinuser);
 
     await Contact.updateOne(
-      { useremail: useremail },
-      { $pull: { contacts: { name : name , phone: phone , email :email } } }
-   )
+      { email: useremail },
+      { $pull: { contacts: { name: name, phone: phone, email: email } } }
+    );
 
+    console.log('After deletion:', loggedinuser);
 
     res.json({ success: true });
   } catch (error) {
@@ -85,6 +88,7 @@ router.post('/deleteData', async (req, res) => {
     res.json({ success: false, error: 'An error occurred while deleting the contact.' });
   }
 });
+
 
 router.post('/updateData', async (req, res) => {
   try {
