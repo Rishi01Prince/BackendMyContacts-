@@ -21,17 +21,23 @@ router.post("/createuser",
                 return res.status(400).json({ success, errors: errors.array() })
             }
 
-    
-            const salt = await bcrypt.genSalt(10);
-            let secPassword = await bcrypt.hash(req.body.password , salt);
 
-            
-            await User.create({
-                name: req.body.name,
-                password: secPassword,
-                email: req.body.email
-            })
-            
+            const salt = await bcrypt.genSalt(10);
+            let secPassword = await bcrypt.hash(req.body.password, salt);
+
+
+            const existingUser = await User.findOne({ email: req.body.email });
+
+            if (existingUser) {
+                return res.status(400).json({ errors: "User already exists" })
+            }
+            else {
+                await User.create({
+                    name: req.body.name,
+                    password: secPassword,
+                    email: req.body.email
+                })
+            }
             res.json({ success: true });
 
         }
@@ -44,11 +50,11 @@ router.post("/createuser",
 router.post("/loginuser",
     [body('email', 'Not a valid mail').isEmail(),
     body('password', 'Password should be minimum of length 5').isLength({ min: 2 })],
-     async (req, res) => {
-        
-       
+    async (req, res) => {
+
+
         let email = req.body.email;
-        
+
         try {
             let userData = await User.findOne({ email });
 
@@ -56,23 +62,23 @@ router.post("/loginuser",
                 return res.status(400).json({ errors: "Try logging with correct credentials" })
             }
 
-            const pwdCompare = await bcrypt.compare(req.body.password , userData.password);
-            
+            const pwdCompare = await bcrypt.compare(req.body.password, userData.password);
+
             if (!pwdCompare) {
                 return res.status(400).json({ errors: "Try logging with correct credentials" })
             }
 
             //Authorization Token hum bana rahe hai taaki hum jab agli baar sign in karegne
-            
+
             //To verification hogi or sign in hogi
             //Jab jab login krte hai tab tab nayi auth token genrate hoti hai
             const data = {
-                user:{
-                    id:userData.id
+                user: {
+                    id: userData.id
                 }
             }
-            const authToken = jwt.sign(data, jwtSecret); 
-            
+            const authToken = jwt.sign(data, jwtSecret);
+
             return res.json({ success: true, authToken })
 
         }
