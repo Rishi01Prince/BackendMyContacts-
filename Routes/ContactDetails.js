@@ -113,7 +113,7 @@ router.post('/updateData', async (req, res) => {
    
     await Contact.updateOne(
       { _id: id , "contacts.email": email },
-      { $set: {  "contacts.$.name": name   , "contacts.$.phone": phone , "contacts.$.email": email, } }
+      { $set: {  "contacts.$.name": newname   , "contacts.$.phone": newphone , "contacts.$.email": newemail, } }
    )
    
 
