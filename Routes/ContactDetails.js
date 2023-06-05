@@ -66,7 +66,10 @@ router.post('/deleteData', async (req, res) => {
     const { useremail, email, name, phone } = req.body;
 
     // Find the user's document
+    console.log("Useremail:", useremail);
+    console.log(useremail , email , name , phone);
     const loggedinuser = await Contact.findOne({ email: useremail });
+    console.log(loggedinuser);
 
     if (!loggedinuser) {
       console.log('User not found.');
@@ -97,8 +100,8 @@ router.post('/updateData', async (req, res) => {
     
 
     // Find the user's document
-    const loggedinuser = await Contact.findOne({ useremail });
-    console.log(loggedinuser.useremail);
+    const loggedinuser = await Contact.findOne({ email : useremail });
+    console.log(loggedinuser.email);
 
     if (!loggedinuser) {
       return res.json({ success: false, error: 'User not found.' });
@@ -109,7 +112,7 @@ router.post('/updateData', async (req, res) => {
     // Find the contact within the user's document
    
     await Contact.updateOne(
-      { useremail: useremail , "contacts.email": email },
+      { email: useremail , "contacts.email": email },
       { $set: {  "contacts.$.name": name   , "contacts.$.phone": phone , "contacts.$.email": email, } }
    )
    
