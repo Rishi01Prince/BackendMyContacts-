@@ -66,7 +66,7 @@ router.post('/deleteData', async (req, res) => {
     const {id, email, name, phone } = req.body;
 
     // Find the user's document
-    console.log("Useremail:", id);
+    console.log("Userid :", id);
     console.log(id , email , name , phone);
     const loggedinuser = await Contact.findOne({ _id: id});
     console.log(loggedinuser);
@@ -79,7 +79,7 @@ router.post('/deleteData', async (req, res) => {
     console.log('Before deletion:', loggedinuser);
 
     await Contact.updateOne(
-      { email: useremail },
+      {_id: id },
       { $pull: { contacts: { name: name, phone: phone, email: email } } }
     );
 
@@ -95,12 +95,12 @@ router.post('/deleteData', async (req, res) => {
 
 router.post('/updateData', async (req, res) => {
   try {
-    const {useremail , email , name , phone , newemail , newname , newphone} = req.body;
+    const {id , email , name , phone , newemail , newname , newphone} = req.body;
 
     
 
     // Find the user's document
-    const loggedinuser = await Contact.findOne({ email : useremail });
+    const loggedinuser = await Contact.findOne({_id:id });
     console.log(loggedinuser.email);
 
     if (!loggedinuser) {
@@ -112,7 +112,7 @@ router.post('/updateData', async (req, res) => {
     // Find the contact within the user's document
    
     await Contact.updateOne(
-      { email: useremail , "contacts.email": email },
+      { _id: id , "contacts.email": email },
       { $set: {  "contacts.$.name": name   , "contacts.$.phone": phone , "contacts.$.email": email, } }
    )
    
