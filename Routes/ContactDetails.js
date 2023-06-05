@@ -10,7 +10,6 @@ router.post('/addContact', async (req, res) => {
     const existingContact = await Contact.findOne({ email: useremail });
 
     if (existingContact) {
-
       // Check if the same contact details already exist
       const contactExists = existingContact.contacts.some((contact) => {
         return (
@@ -22,13 +21,12 @@ router.post('/addContact', async (req, res) => {
 
       if (!contactExists) {
         // Add the new contact to the existing user's document
-        await Contact.findOneAndUpdate(
+        await Contact.updateOne(
           { email: useremail },
           { $push: { contacts: contactData } }
         );
       }
-    }
-     else {
+    } else {
       // Create a new document for the user and add the contact
       console.log("Creating First Contact");
 
@@ -39,10 +37,9 @@ router.post('/addContact', async (req, res) => {
     }
 
     res.json({ success: true });
-  } 
-  catch (error) {
+  } catch (error) {
     console.error(error);
-    res.json({ success: false, error: 'An error occurred while processing the Contact.' });
+    res.json({ success: false, error: 'An error occurred while processing the contact.' });
   }
 });
 
@@ -51,33 +48,27 @@ router.post('/mycurrentData', async (req, res) => {
     const myData = await Contact.findOne({ email: req.body.email });
     console.log(myData);
     res.json(myData);
-
-  } 
-  catch (error) {
+  } catch (error) {
     console.error(error);
-    res.json({ success: false, error: 'An error occurred while processing the Contact.' });
+    res.json({ success: false, error: 'An error occurred while processing the contact.' });
   }
-
 });
-
 
 router.post('/deleteData', async (req, res) => {
   try {
-    const{useremail , email , name , phone} = req.body;
+    const { useremail, email, name, phone } = req.body;
 
     // Find the user's document
-    const loggedinuser = await Contact.findOne({ useremail });
+    const loggedinuser = await Contact.findOne({ email: useremail });
 
     if (!loggedinuser) {
       return res.json({ success: false, error: 'User not found.' });
     }
 
-
     await Contact.updateOne(
-      { useremail: useremail },
-      { $pull: { contacts: { name : name , phone: phone , email :email } } }
-   )
-
+      { email: useremail },
+      { $pull: { contacts: { email: email, name: name, phone: phone } } }
+    );
 
     res.json({ success: true });
   } catch (error) {
@@ -88,28 +79,21 @@ router.post('/deleteData', async (req, res) => {
 
 router.post('/updateData', async (req, res) => {
   try {
-    const {useremail , email , name , phone , newemail , newname , newphone} = req.body;
-
-    
+    const { useremail, email, name, phone, newemail, newname, newphone } = req.body;
 
     // Find the user's document
-    const loggedinuser = await Contact.findOne({ useremail });
-    console.log(loggedinuser.useremail);
+    const loggedinuser = await Contact.findOne({ email: useremail });
+    console.log(loggedinuser?.email);
 
     if (!loggedinuser) {
       return res.json({ success: false, error: 'User not found.' });
     }
 
-    
-
     // Find the contact within the user's document
-   
-
-
-    
-
-
-   
+    await Contact.updateOne(
+      { email: useremail, 'contacts.email': email },
+      { $set: { 'contacts.$.name': newname, 'contacts.$.phone': newphone, 'contacts.$.email': newemail } }
+    );
 
     res.json({ success: true });
   } catch (error) {
