@@ -21,7 +21,7 @@ app.use(express.json())
 //  any HTTP request that matches the /api path, such as GET /api/users or POST /api/users, will be passed to the CreateUser module for handling.
 app.use(express.json());
 app.use('/api', require('./Routes/CreateUser'));
-app.use('/api', require('./Routes/DisplayContactDetails'));
+
 app.use('/api', require('./Routes/ContactDetails'));
 
 
