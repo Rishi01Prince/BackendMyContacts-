@@ -63,12 +63,12 @@ router.post('/mycurrentData', async (req, res) => {
 
 router.post('/deleteData', async (req, res) => {
   try {
-    const { useremail, email, name, phone } = req.body;
+    const {id, email, name, phone } = req.body;
 
     // Find the user's document
-    console.log("Useremail:", useremail);
-    console.log(useremail , email , name , phone);
-    const loggedinuser = await Contact.findOne({ email: useremail });
+    console.log("Useremail:", id);
+    console.log(id , email , name , phone);
+    const loggedinuser = await Contact.findOne({ _id: id});
     console.log(loggedinuser);
 
     if (!loggedinuser) {
