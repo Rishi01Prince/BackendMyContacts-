@@ -71,10 +71,10 @@ router.post('/deleteData', async (req, res) => {
     const loggedinuser = await Contact.findOne({ email: useremail });
     console.log(loggedinuser);
 
-    if (!loggedinuser) {
-      console.log('User not found.');
-      return res.json({ success: false, error: 'User not found.' });
-    }
+    // if (!loggedinuser) {
+    //   console.log('User not found.');
+    //   return res.json({ success: false, error: 'User not found.' });
+    // }
 
     console.log('Before deletion:', loggedinuser);
 
